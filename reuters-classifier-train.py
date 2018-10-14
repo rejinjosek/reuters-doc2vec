@@ -13,14 +13,14 @@ from nltk.corpus import reuters
 from nltk.tokenize import word_tokenize
 from sklearn.preprocessing.label import MultiLabelBinarizer
 import logging 
-logging.basicConfig(level=INFO)
+logging.basicConfig(level='INFO')
 logger=logging.getLogger(__name__)
 #uncomment these two lines   if the corpus is not available
 #nltk.download('reuters')
 #nltk.download('punkt')
 #logger.info('finished downloading corpus')
 
-doc2vec_model_location = 'vectors/doc2vec-model.bin'
+doc2vec_model_location = 'vectors/doc2vec-vectors.bin'
 doc2vec_dimensions = 300
 classifier_model_location = 'models/classifier-model.bin'
 
@@ -44,15 +44,15 @@ train_data, test_data, train_labels, test_labels = numpy.asarray(train_data), nu
 logger.info('completed vector inference from doc2vec')
 # Initialize the neural network
 model = Sequential()
-model.add(Dense(input_dim=doc2vec_dimensions, output_dim=500, activation='relu'))
+model.add(Dense(input_dim=doc2vec_dimensions, units=500, activation='relu'))
+#model.add(Dropout(0.3))
+#model.add(Dense(units=1200, activation='relu'))
+#model.add(Dropout(0.3))
+model.add(Dense(units=600, activation='relu'))
 model.add(Dropout(0.3))
-model.add(Dense(output_dim=1200, activation='relu'))
+model.add(Dense(units=400, activation='relu'))
 model.add(Dropout(0.3))
-model.add(Dense(output_dim=400, activation='relu'))
-model.add(Dropout(0.3))
-model.add(Dense(output_dim=600, activation='relu'))
-model.add(Dropout(0.3))
-model.add(Dense(output_dim=train_labels.shape[1], activation='softmax'))
+model.add(Dense(units=train_labels.shape[1], activation='softmax'))
 model.compile(optimizer=Adam(), loss='categorical_crossentropy', metrics=['accuracy'])
 
 # Saves the model with highest score after each training cycle
@@ -60,5 +60,5 @@ checkpointer = ModelCheckpoint(filepath=classifier_model_location, verbose=1, sa
 logger.info('neural network model compiled')
 # Train the neural network
 logger.info('starting training')
-model.fit(train_data, train_labels, validation_data=(test_data, test_labels), batch_size=32, nb_epoch=15, callbacks=[checkpointer])
+model.fit(train_data, train_labels, validation_data=(test_data, test_labels), batch_size=32, epochs=15, callbacks=[checkpointer])
 logger.info('model training finished')

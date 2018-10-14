@@ -9,10 +9,10 @@ from nltk.corpus import reuters
 from nltk.tokenize import word_tokenize
 from sklearn.preprocessing.label import MultiLabelBinarizer
 import logging 
-logging.basicConfig(level=INFO)
+logging.basicConfig(level='INFO')
 logger=logging.getLogger(__name__)
 
-doc2vec_model_location = 'vectors/doc2vec-model.bin'
+doc2vec_model_location = 'vectors/doc2vec-vectors.bin'
 classifier_model_location = 'models/classifier-model.bin'
 
 # Use the doc2vec model created in reuters-classifier-train.py
